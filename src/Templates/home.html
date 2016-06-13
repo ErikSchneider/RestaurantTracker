@@ -27,19 +27,21 @@
 
 <ol>
     {{#restaurants}}
-    <li><b>{{name}}</b> - {{location}} - {{rating}}/5 - {{comment}}</li>
+    <b>{{name}}</b> - {{location}} - {{rating}}/5 | Comments: {{comment}}.
+    <br>
+    <form action="/edit-restaurant" method="post">
+        <input type="hidden" name="id" value="{{id}}"/>
+        <a href="/edit-restaurant?id={{id}}">Edit Restaurant</a>
+    </form>
+    <form action="/delete-restaurant" method="post">
+            <input type="hidden" name="id" value="{{id}}"/>
+            <button type="submit">Delete Restaurant</button>
+        </form>
+
+    <br>
     {{/restaurants}}
 
 </ol>
-
-<br>
-
-<form action="/delete-restaurant" method="post">
-    <input type="number" name="id" placeholder="#"/>
-    <button type="submit">Delete Restaurant</button>
-</form>
-
-<br>
 
 </body>
 </html>

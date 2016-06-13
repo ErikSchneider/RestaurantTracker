@@ -1,0 +1,20 @@
+<html>
+<body>
+{{#restaurant}}
+<form action="/update-restaurant" method="post">
+    <input type="text" value="{{restaurant.name}}" name="newName" placeholder="Update Name"/>
+    <input type="text" value="{{restaurant.location}}" name="newLocation" placeholder="Update Location"/>
+    <select name="newRating">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+    </select>
+    <input type="text" value="{{restaurant.comment}}" name="newComment" placeholder="Update Comment"/>
+    <input type="hidden" name="id" value="{{restaurant.id}}"/>
+    <button type="submit">Update Restaurant</button>
+</form>
+{{/restaurant}}
+</body>
+</html>

@@ -37,6 +37,16 @@ public class Main {
         }
         return restaurants;
     }
+    public static void updateRestaurant(Connection conn, String name, String location, int rating, String comment) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("UPDATE restaurants SET name  = ?, location =  ?, rating = ?, comment = ?");
+        stmt.setString(1, name);
+        stmt.setString(2, location);
+        stmt.setInt(3, rating);
+        stmt.setString(4, comment);
+        stmt.execute();
+    }
+
+
     public static void deleteRestaurant(Connection conn, int id) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM restaurants WHERE id = ?");
         stmt.setInt(1, id);
@@ -65,8 +75,8 @@ public class Main {
                     }
                     else {
                         User user = users.get(username);
-                        ArrayList<Restaurant> restaurantList = selectRestaurants(conn);
-                        m.put("restaurants", restaurantList);
+                        user.restaurants = selectRestaurants(conn);
+                        m.put("restaurants", user.restaurants);
                         return new ModelAndView(m, "home.html");
                     }
                 },
@@ -113,7 +123,7 @@ public class Main {
                         throw new Exception("Invalid form fields");
                     }
 
-                    User user= users.get(username);
+                    User user = users.get(username);
                     if (user == null) {
                         throw new Exception("User does not exist");
                     }
@@ -123,6 +133,43 @@ public class Main {
                     response.redirect("/");
                     return "";
 
+                }
+        );
+        Spark.get(
+                "/edit-restaurant",
+                (request, response) -> {
+
+                    Session session = request.session();
+                    String username = session.attribute("username");
+
+                    User user = users.get(username);
+
+                    int id = (Integer.valueOf(request.queryParams("id")));
+                    HashMap m2 = new HashMap();
+
+                    Restaurant restaurant = user.restaurants.get(id);
+                    m2.put("restaurant", restaurant);
+
+                    return new ModelAndView(m2, "update.html");
+                },
+                new MustacheTemplateEngine()
+        );
+        Spark.post(
+                "/update-restaurant",
+                (request, response) -> {
+
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    User user = users.get(username);
+
+                    int id = Integer.valueOf(request.queryParams("id"));
+                    Restaurant restaurant = user.restaurants.get(id);
+                    restaurant.name = (request.queryParams("newName"));
+                    restaurant.location = (request.queryParams("newLocation"));
+                    restaurant.rating = (Integer.valueOf(request.queryParams("newRating")));
+                    restaurant.comment = (request.queryParams("newComment"));
+                    response.redirect("/");
+                    return "";
                 }
         );
         Spark.post(
