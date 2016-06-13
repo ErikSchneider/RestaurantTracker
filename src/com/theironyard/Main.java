@@ -37,12 +37,32 @@ public class Main {
         }
         return restaurants;
     }
-    public static void updateRestaurant(Connection conn, String name, String location, int rating, String comment) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("UPDATE restaurants SET name  = ?, location =  ?, rating = ?, comment = ?");
+
+    public static Restaurant selectRestaurant(Connection conn, int id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM restaurants WHERE id = ?");
+        stmt.setInt(1, id);
+        ResultSet results = stmt.executeQuery();
+
+        if (results.next()) {
+            String name = results.getString("name");
+            String location = results.getString("location");
+            int rating = results.getInt("rating");
+            String comment = results.getString("comment");
+            Restaurant restaurant = new Restaurant(id, name, location, rating, comment);
+            return restaurant;
+        }
+        return null;
+    }
+
+
+
+    public static void updateRestaurant(Connection conn, String name, String location, int rating, String comment, int id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("UPDATE restaurants SET name  = ?, location =  ?, rating = ?, comment = ? WHERE id = ?");
         stmt.setString(1, name);
         stmt.setString(2, location);
         stmt.setInt(3, rating);
         stmt.setString(4, comment);
+        stmt.setInt(5, id);
         stmt.execute();
     }
 
@@ -147,7 +167,7 @@ public class Main {
                     int id = (Integer.valueOf(request.queryParams("id")));
                     HashMap m2 = new HashMap();
 
-                    Restaurant restaurant = user.restaurants.get(id);
+                    Restaurant restaurant = selectRestaurant(conn, id);
                     m2.put("restaurant", restaurant);
 
                     return new ModelAndView(m2, "update.html");
@@ -163,11 +183,11 @@ public class Main {
                     User user = users.get(username);
 
                     int id = Integer.valueOf(request.queryParams("id"));
-                    Restaurant restaurant = user.restaurants.get(id);
-                    restaurant.name = (request.queryParams("newName"));
-                    restaurant.location = (request.queryParams("newLocation"));
-                    restaurant.rating = (Integer.valueOf(request.queryParams("newRating")));
-                    restaurant.comment = (request.queryParams("newComment"));
+                    String name = (request.queryParams("newName"));
+                    String location = (request.queryParams("newLocation"));
+                    int rating = (Integer.valueOf(request.queryParams("newRating")));
+                    String comment = (request.queryParams("newComment"));
+                    updateRestaurant(conn, name, location, rating, comment, id);
                     response.redirect("/");
                     return "";
                 }
