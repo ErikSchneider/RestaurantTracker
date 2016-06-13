@@ -45,7 +45,7 @@ public class Main {
                         user = new User(name, pass);
                         users.put(name, user);
                     }
-                    else if (!name.equals(user.name)) {
+                    else if (!pass.equals(user.password)) {
                         throw new Exception("Wrong password");
                     }
 
