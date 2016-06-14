@@ -95,8 +95,7 @@ public class Main {
                     }
                     else {
                         User user = users.get(username);
-                        user.restaurants = selectRestaurants(conn);
-                        m.put("restaurants", user.restaurants);
+                        m.put("restaurants", selectRestaurants(conn));
                         return new ModelAndView(m, "home.html");
                     }
                 },
@@ -212,10 +211,10 @@ public class Main {
 
                     int id = Integer.valueOf(request.queryParams("id"));
 
-                    User user = users.get(username);
-                    if (id <= 0) {
-                        throw new Exception("Invalid id");
-                    }
+//                    User user = users.get(username);
+//                    if (id <= 0) {
+//                        throw new Exception("Invalid id");
+//                    }
 
                     deleteRestaurant(conn, id);
                     response.redirect("/");
