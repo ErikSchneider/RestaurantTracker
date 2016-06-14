@@ -27,7 +27,7 @@
 
 <ol>
     {{#restaurants}}
-    <b>{{name}}</b> - {{location}} Rating: {{rating}}/5 | Comments: {{comment}}.
+    <b>{{name}}</b> - {{location}} | Rating: {{rating}}/5 | Comments: {{comment}}.
     <br>
     <form action="/edit-restaurant" method="post">
         <input type="hidden" name="id" value="{{id}}"/>
